@@ -1,9 +1,10 @@
 import moment from 'moment';
 
 export default async function Home() {
-    const expenses = await fetch('http://localhost:3000/api/expenses').then(
-        (res) => res.json(),
-    );
+    const expensesResponse = await fetch('http://localhost:3000/api/expenses', {
+        next: { revalidate: 10 },
+    });
+    const expenses = await expensesResponse.json();
 
     function addBackground(color: string) {
         switch (color) {
@@ -17,6 +18,8 @@ export default async function Home() {
                 return 'bg-purple-300';
             case 'gray':
                 return 'bg-gray-300';
+            case 'orange':
+                return 'bg-orange-300';
             default:
                 return '';
         }
@@ -49,7 +52,7 @@ export default async function Home() {
                     </tr>
                 </thead>
                 <tbody className='text-md divide-y'>
-                    {expenses.reverse().map((expense) => (
+                    {expenses.map((expense) => (
                         <tr key={expense.id}>
                             <td className='pl-5 p-2 whitespace-nowrap'>
                                 {
@@ -58,7 +61,10 @@ export default async function Home() {
                                 }
                             </td>
                             <td className='p-2 whitespace-nowrap text-right'>
-                                ₹ {expense.properties.amount.number}
+                                ₹{' '}
+                                {expense.properties.amount.number.toLocaleString(
+                                    'en-US',
+                                )}
                             </td>
                             <td
                                 className={`p-2 whitespace-now text-right flex`}
@@ -82,7 +88,7 @@ export default async function Home() {
                     <tr>
                         <td className='pl-5 p-2 whitespace-nowrap'>Total </td>
                         <td className='p-2 whitespace-nowrap text-right'>
-                            ₹ {totalExpenses}
+                            ₹ {totalExpenses.toLocaleString('en-US')}
                         </td>
                         <td
                             className={`p-2 whitespace-now text-right flex`}
