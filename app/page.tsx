@@ -3,12 +3,12 @@ import ExpensesTable from '@/components/expensesTable';
 import IncomesTable from '@/components/incomesTable';
 
 export default async function Home() {
-    const expensesResponse = await fetch('http://localhost:3000/api/expenses', {
+    const expensesResponse = await fetch('http://127.0.0.1:3000/api/expenses', {
         next: { revalidate: 5 },
     });
     const expenses: Expense[] = await expensesResponse.json();
 
-    const incomesResponse = await fetch('http://localhost:3000/api/incomes', {
+    const incomesResponse = await fetch('http://127.0.0.1:3000/api/incomes', {
         next: { revalidate: 5 },
     });
     const incomes: Income[] = await incomesResponse.json();
