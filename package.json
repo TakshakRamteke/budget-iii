@@ -1,32 +1,33 @@
 {
-  "name": "budgetiii",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@notionhq/client": "^2.2.13",
-    "chart.js": "^4.4.0",
-    "moment": "^2.29.4",
-    "next": "latest",
-    "react": "latest",
-    "react-chartjs-2": "^5.2.0",
-    "react-dom": "latest"
-  },
-  "devDependencies": {
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "autoprefixer": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "postcss": "latest",
-    "prettier": "^3.0.3",
-    "tailwindcss": "latest",
-    "typescript": "latest"
-  }
+    "name": "budgetiii",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@next/font": "^13.5.3",
+        "@notionhq/client": "^2.2.13",
+        "chart.js": "^4.4.0",
+        "moment": "^2.29.4",
+        "next": "13.2",
+        "react": "latest",
+        "react-chartjs-2": "^5.2.0",
+        "react-dom": "latest"
+    },
+    "devDependencies": {
+        "@types/node": "latest",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
+        "autoprefixer": "latest",
+        "eslint": "latest",
+        "eslint-config-next": "latest",
+        "postcss": "latest",
+        "prettier": "^3.0.3",
+        "tailwindcss": "latest",
+        "typescript": "latest"
+    }
 }
