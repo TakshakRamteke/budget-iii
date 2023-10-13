@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, View, Text } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -13,17 +13,27 @@ export default function AddIncome() {
     const [newName, onChangeNewName] = useState('');
     const [newAmount, onChangeNewAmount] = useState('');
     const [dropDownOpen, setDropDownOpen] = useState(false);
-    const [newCategory, setNewCategory] = useState(null);
-    const [avaliableCategouries, setAvaliableCategouries] = useState([
-        { label: 'Others', value: 'others' },
-        { label: 'Salary', value: 'salary' },
-        { label: 'Payback', value: 'payback' },
-        { label: 'Savings', value: 'savings' },
-    ]);
+    const [newCategory, setNewCategory] = useState<number>(-1);
+    const [avaliableCategouries, setAvaliableCategouries] = useState<
+        Category[]
+    >([]);
     const [newDate, setNewDate] = useState(new Date());
     const [isAdding, setIsAdding] = useState(false);
 
     DropDownPicker.setTheme('DARK');
+
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT * FROM incomesCategouries',
+                [],
+                (_, { rows }) => {
+                    console.log(rows._array);
+                    setAvaliableCategouries(rows._array);
+                },
+            );
+        });
+    }, []);
 
     function onChange(event: any, selectedDate: any | Date) {
         const newDate = selectedDate;
@@ -51,9 +61,11 @@ export default function AddIncome() {
             db.transaction((tx) => {
                 setIsAdding(true);
                 tx.executeSql(
-                    `INSERT INTO incomes (amount,name,category,date) VALUES (${parseInt(
+                    `INSERT INTO incomes (amount,name,categoryId,date) VALUES (${parseInt(
                         newAmount,
-                    )},"${newName}","${newCategory}","${newDate}")`,
+                    )},"${newName}",${parseInt(
+                        newCategory.toString(),
+                    )},"${new Date(newDate)}")`,
                     [],
                     (_, { rows }) => {
                         setIsAdding(false);
@@ -99,6 +111,11 @@ export default function AddIncome() {
                 <DropDownPicker
                     open={dropDownOpen}
                     value={newCategory}
+                    schema={{
+                        label: 'name',
+                        value: 'id',
+                    }}
+                    //@ts-ignore
                     items={avaliableCategouries}
                     setOpen={setDropDownOpen}
                     setValue={setNewCategory}
@@ -113,12 +130,16 @@ export default function AddIncome() {
                 />
 
                 <Text className='text-white'>Date : </Text>
-                <Pressable
-                    onPressIn={showDatepicker}
-                    onPressOut={showTimePicker}
-                >
+                <Pressable onPressIn={showDatepicker}>
                     <Text className='border rounded-sm my-2 p-2.5 px-3 text-white border-[#1C1C1C] bg-[#1C1C1C]'>
-                        {moment(newDate).format('Do MMM yyyy, h:mm a')}
+                        {moment(newDate).format('Do MMM yyyy')}
+                    </Text>
+                </Pressable>
+
+                <Text className='text-white'>Time: </Text>
+                <Pressable onPressIn={showTimePicker}>
+                    <Text className='border rounded-sm my-2 p-2.5 px-3 text-white bg-[#1C1C1C] border-[#1C1C1C]'>
+                        {moment(newDate).format('hh:mm a')}
                     </Text>
                 </Pressable>
             </View>

@@ -1,13 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import Table from '../components/table';
 import TotalCard from '../components/totalCard';
+import { recordsContext } from '../utils/RecordsProvider';
 
 export default function Page() {
     const db = SQLite.openDatabase('dev.db');
 
     //    db.transaction((tx) => {
+    //        tx.executeSql('DROP TABLE incomesCategouries', [], () => {
+    //            console.log('Dropping incomesCategouries table');
+    //        });
+    //        tx.executeSql('DROP TABLE expensesCategouries', [], () => {
+    //            console.log('Dropping expensesCategouries table');
+    //        });
     //        tx.executeSql('DROP TABLE expenses', [], () => {
     //            console.log('Dropping expenses table');
     //        });
@@ -16,25 +23,65 @@ export default function Page() {
     //        });
     //    });
 
-    const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [incomes, setIncomes] = useState<Income[]>([]);
+    const { incomes, setIncomes, expenses, setExpenses } = useContext(
+        recordsContext,
+    ) as RecordsProviderContext;
 
     useEffect(() => {
-        db.transaction((tx) => {
-            tx.executeSql(
-                `CREATE TABLE IF NOT EXISTS expenses (id INTEGER PRIMARY KEY NOT NULL, name TEXT, amount INTEGER, category TEXT, date TEXT)`,
-            );
-            tx.executeSql(
-                `CREATE TABLE IF NOT EXISTS incomes (id INTEGER PRIMARY KEY NOT NULL, name TEXT, amount INTEGER, category TEXT, date TEXT)`,
-            );
-        });
+        db.exec(
+            [
+                {
+                    sql: 'CREATE TABLE IF NOT EXISTS expensesCategouries (id INTEGER PRIMARY KEY NOT NULL, name TEXT)',
+                    args: [],
+                },
+                {
+                    sql: 'CREATE TABLE IF NOT EXISTS incomesCategouries (id INTEGER PRIMARY KEY NOT NULL, name TEXT)',
+                    args: [],
+                },
+                {
+                    sql: `CREATE TABLE IF NOT EXISTS expenses (
+                            id          INTEGER PRIMARY KEY NOT NULL, 
+                            name        TEXT, 
+                            amount      INTEGER, 
+                            categoryId  INTEGER, 
+                            date        TEXT, 
+
+                            FOREIGN KEY (categoryId) REFERENCES expensesCategouries(id) ON DELETE CASCADE
+                        );`,
+                    args: [],
+                },
+                {
+                    sql: `CREATE TABLE IF NOT EXISTS incomes (
+                            id          INTEGER PRIMARY KEY NOT NULL, 
+                            name        TEXT, 
+                            amount      INTEGER, 
+                            categoryId  INTEGER, 
+                            date        TEXT, 
+    
+                            FOREIGN KEY (categoryId) REFERENCES incomesCategouries(id) ON DELETE CASCADE
+                        );`,
+                    args: [],
+                },
+            ],
+            false,
+            (_, errors) => {
+                //@ts-expect-error
+                errors.map((error) => console.log(error));
+            },
+        );
 
         db.transaction((tx) => {
-            tx.executeSql('SELECT * FROM expenses', [], (_, { rows }) =>
-                setExpenses(rows._array),
+            tx.executeSql(
+                'SELECT expenses.*, expensesCategouries.name AS category FROM expenses LEFT JOIN expensesCategouries ON expenses.categoryId=expensesCategouries.id',
+                [],
+                (_, { rows }) => setExpenses(rows._array),
             );
-            tx.executeSql('SELECT * FROM incomes', [], (_, { rows }) =>
-                setIncomes(rows._array),
+            tx.executeSql(
+                'SELECT incomes.*, incomesCategouries.name AS category FROM incomes LEFT JOIN incomesCategouries ON incomes.categoryId=incomesCategouries.id',
+                [],
+                (_, { rows }) => {
+                    setIncomes(rows._array);
+                },
             );
         });
     }, []);

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pressable, View, Text } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { TextInput } from 'react-native-gesture-handler';
@@ -15,22 +15,26 @@ export default function AddExpense() {
     const [newName, onChangeNewName] = useState('');
     const [newAmount, onChangeNewAmount] = useState('');
     const [dropDownOpen, setDropDownOpen] = useState(false);
-    const [newCategory, setNewCategory] = useState(null);
-    const [avaliableCategouries, setAvaliableCategouries] = useState([
-        { label: 'Others', value: 'others' },
-        { label: 'Home', value: 'home' },
-        { label: 'Food', value: 'food' },
-        { label: 'Fuel', value: 'fuel' },
-        { label: 'Books', value: 'books' },
-        { label: 'Medical', value: 'medical' },
-        { label: 'Projects', value: 'projects' },
-        { label: 'Expenses', value: 'expenses' },
-        { label: 'Productive', value: 'productive' },
-        { label: 'Entertainment', value: 'entertainment' },
-    ]);
+    const [newCategory, setNewCategory] = useState<number>(-1);
+    const [avaliableCategouries, setAvaliableCategouries] = useState<
+        Category[]
+    >([]);
     const [newDate, setNewDate] = useState(new Date());
 
     DropDownPicker.setTheme('DARK');
+
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT * FROM expensesCategouries',
+                [],
+                (_, { rows }) => {
+                    console.log(rows._array);
+                    setAvaliableCategouries(rows._array);
+                },
+            );
+        });
+    }, []);
 
     function onChange(event: any, selectedDate: any | Date) {
         const newDate = selectedDate;
@@ -58,15 +62,14 @@ export default function AddExpense() {
             db.transaction((tx) => {
                 setIsAdding(true);
                 tx.executeSql(
-                    `INSERT INTO expenses (amount, name, date, category) VALUES (${parseInt(
+                    `INSERT INTO expenses (amount, name, date, categoryId) VALUES (${parseInt(
                         newAmount,
-                    )}, "${newName}","${newDate}","${newCategory}")`,
+                    )}, "${newName}","${newDate}",${parseInt(
+                        newCategory.toString(),
+                    )})`,
                     [],
                     (_, { rows }) => {
                         setIsAdding(false);
-                        setNewCategory(null);
-                        onChangeNewAmount('');
-                        onChangeNewName('');
                         router.push('/');
                     },
                 );
@@ -109,6 +112,11 @@ export default function AddExpense() {
                 <DropDownPicker
                     open={dropDownOpen}
                     value={newCategory}
+                    schema={{
+                        label: 'name',
+                        value: 'id',
+                    }}
+                    //@ts-ignore
                     items={avaliableCategouries}
                     setOpen={setDropDownOpen}
                     setValue={setNewCategory}
@@ -123,12 +131,16 @@ export default function AddExpense() {
                     }}
                 />
                 <Text className='text-white'>Date : </Text>
-                <Pressable
-                    onPressIn={showDatepicker}
-                    onPressOut={showTimePicker}
-                >
+                <Pressable onPressIn={showDatepicker}>
                     <Text className='border rounded-sm my-2 p-2.5 px-3 text-white bg-[#1C1C1C] border-[#1C1C1C]'>
-                        {moment(newDate).format('Do MMM yyyy, h:mm a')}
+                        {moment(newDate).format('Do MMM yyyy')}
+                    </Text>
+                </Pressable>
+
+                <Text className='text-white'>Time: </Text>
+                <Pressable onPressIn={showTimePicker}>
+                    <Text className='border rounded-sm my-2 p-2.5 px-3 text-white bg-[#1C1C1C] border-[#1C1C1C]'>
+                        {moment(newDate).format('hh:mm a')}
                     </Text>
                 </Pressable>
             </View>

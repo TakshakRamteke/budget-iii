@@ -32,11 +32,11 @@ export default function BottomNavigation() {
                     </View>
                 </Link>
 
-                <Link href='/incomes/addIncome'>
+                <Link href='/incomes'>
                     <View className='flex flex-col items-center justify-center'>
                         <IncomeIcon
                             stroke={
-                                pathName.includes('/addIncome')
+                                pathName.includes('/incomes')
                                     ? '#AA00FA'
                                     : 'white'
                             }
@@ -53,11 +53,11 @@ export default function BottomNavigation() {
                     </View>
                 </Link>
 
-                <Link href='/expenses/addExpense'>
+                <Link href='/expenses'>
                     <View className='flex flex-col items-center justify-center'>
                         <ExpenseIcon
                             stroke={
-                                pathName.includes('/addExpense')
+                                pathName.includes('/expenses')
                                     ? '#AA00FA'
                                     : 'white'
                             }
