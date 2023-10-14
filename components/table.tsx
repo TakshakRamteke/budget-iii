@@ -64,7 +64,7 @@ export default function Table({ records }: { records: Expense[] }) {
                             >
                                 {record.index === 0
                                     ? record.item.date
-                                    : moment(record.item.date).format(
+                                    : moment(new Date(record.item.date)).format(
                                           'Do MMM yyyy, h:mm a',
                                       )}
                             </Text>
