@@ -21,7 +21,21 @@
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "package": "com.takshakramteke.budgetiii"
+            "package": "com.takshakramteke.budgetiii",
+            "intentFilters": [
+                {
+                    "action": "VIEW",
+                    "autoVerify": true,
+                    "data": [
+                        {
+                            "scheme": "https",
+                            "host": "*.budgetiii.io",
+                            "pathPrefix": "/records"
+                        }
+                    ],
+                    "category": ["BROWSABLE", "DEFAULT"]
+                }
+            ]
         },
         "web": {
             "favicon": "./assets/favicon.png"
