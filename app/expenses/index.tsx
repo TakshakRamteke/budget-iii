@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
-import { useContext, useEffect, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { useContext, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import { recordsContext } from '../../utils/RecordsProvider';
 import Table from '../../components/table';
 import TotalCard from '../../components/totalCard';
