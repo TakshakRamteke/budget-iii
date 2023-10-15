@@ -77,7 +77,13 @@ export default function Incomes() {
                 ))}
             </ScrollView>
             <View className='my-3'>
-                <Table records={incomes} type='incomes' />
+                <Table
+                    records={incomes.sort((current, next) => {
+                        //@ts-ignore
+                        return new Date(next.date) - new Date(current.date);
+                    })}
+                    type='incomes'
+                />
             </View>
         </>
     );

@@ -123,14 +123,26 @@ export default function Page() {
                 <Text className='mb-2 font-semibold text-lg text-white'>
                     Incomes
                 </Text>
-                <Table records={incomes} type='incomes' />
+                <Table
+                    records={incomes.sort((current, next) => {
+                        //@ts-ignore
+                        return new Date(next.date) - new Date(current.date);
+                    })}
+                    type='incomes'
+                />
             </View>
 
             <View className='my-3'>
                 <Text className='mb-2 font-semibold text-lg text-white'>
                     Expenses
                 </Text>
-                <Table records={expenses} type='expenses' />
+                <Table
+                    records={expenses.sort((current, next) => {
+                        //@ts-ignore
+                        return new Date(next.date) - new Date(current.date);
+                    })}
+                    type='expenses'
+                />
             </View>
         </>
     );
