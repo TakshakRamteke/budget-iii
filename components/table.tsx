@@ -1,8 +1,15 @@
 import { ScrollView } from 'react-native-gesture-handler';
 import { View, Text, FlatList } from 'react-native';
 import moment from 'moment';
+import { Link } from 'expo-router';
 
-export default function Table({ records }: { records: Expense[] }) {
+export default function Table({
+    records,
+    type,
+}: {
+    records: Expense[];
+    type: 'incomes' | 'expenses';
+}) {
     const tableHeaders = [
         {
             id: -1,
@@ -21,17 +28,32 @@ export default function Table({ records }: { records: Expense[] }) {
                     <>
                         <View className='flex flex-row items-center border-slate-600'>
                             <Text
-                                className={`text-white w-44 border-x border-b border-slate-600 p-2 ${
+                                className={`text-white w-44 border-x border-b border-slate-600 p-2 decoration-slate-300 ${
                                     record.index === 0
                                         ? 'border-t bg-[#1C1C1C] rounded-tl'
-                                        : ''
+                                        : 'underline'
                                 } ${
                                     record.index === records.length
                                         ? 'rounded-bl'
                                         : ''
                                 }`}
+                                style={{ textDecorationColor: 'gray' }}
                             >
-                                {record.item.name}
+                                {
+                                    //@ts-ignore
+                                    record.item.id > 0 ? (
+                                        <Link
+                                            href={{
+                                                pathname: `/${type}/[id]`,
+                                                params: { id: record.item.id },
+                                            }}
+                                        >
+                                            {record.item.name}
+                                        </Link>
+                                    ) : (
+                                        `${record.item.name}`
+                                    )
+                                }
                             </Text>
                             <Text
                                 className={`text-white w-24 text-right border-r border-b border-slate-600 p-2 px-3 ${
