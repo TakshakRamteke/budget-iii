@@ -70,7 +70,7 @@ export default function AddExpense() {
                     [],
                     (_, { rows }) => {
                         setIsAdding(false);
-                        router.push('/');
+                        router.back();
                     },
                 );
             });
@@ -83,15 +83,6 @@ export default function AddExpense() {
                 <Text className='text-2xl font-bold text-white'>
                     Add Expense
                 </Text>
-                <Pressable onPress={addExpense} className='ml-auto'>
-                    <Text
-                        className={`${
-                            isAdding ? 'text-blue-200' : 'text-blue-500'
-                        } text-lg`}
-                    >
-                        Add
-                    </Text>
-                </Pressable>
             </View>
 
             <View className='my-3'>
@@ -142,6 +133,14 @@ export default function AddExpense() {
                     <Text className='border rounded-sm my-2 p-2.5 px-3 text-white bg-[#1C1C1C] border-[#1C1C1C]'>
                         {moment(newDate).format('hh:mm a')}
                     </Text>
+                </Pressable>
+            </View>
+            <View className='my-1.5'>
+                <Pressable
+                    onPress={addExpense}
+                    className='bg-green-500 p-2 rounded'
+                >
+                    <Text className='text-white text-center'>Save Expense</Text>
                 </Pressable>
             </View>
         </>
