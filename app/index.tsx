@@ -123,14 +123,14 @@ export default function Page() {
                 <Text className='mb-2 font-semibold text-lg text-white'>
                     Incomes
                 </Text>
-                <Table records={incomes} />
+                <Table records={incomes} type='incomes' />
             </View>
 
             <View className='my-3'>
                 <Text className='mb-2 font-semibold text-lg text-white'>
                     Expenses
                 </Text>
-                <Table records={expenses} />
+                <Table records={expenses} type='expenses' />
             </View>
         </>
     );

@@ -4,6 +4,7 @@ type Expense = {
     amount: number;
     category: string;
     date: string;
+    categoryId: string;
 };
 
 type Income = {
@@ -12,6 +13,7 @@ type Income = {
     amount: number;
     category: string;
     date: string;
+    categoryId: string;
 };
 
 type Category = {

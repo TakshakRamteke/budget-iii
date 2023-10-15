@@ -1,13 +1,30 @@
 import { Link } from 'expo-router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { recordsContext } from '../../utils/RecordsProvider';
 import Table from '../../components/table';
 import TotalCard from '../../components/totalCard';
 import { ScrollView } from 'react-native-gesture-handler';
+import * as SQLite from 'expo-sqlite';
 
 export default function Incomes() {
-    const { incomes } = useContext(recordsContext) as RecordsProviderContext;
+    const db = SQLite.openDatabase('dev.db');
+
+    const { incomes, setIncomes } = useContext(
+        recordsContext,
+    ) as RecordsProviderContext;
+
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT incomes.*, incomesCategouries.name AS category FROM incomes LEFT JOIN incomesCategouries ON incomes.categoryId=incomesCategouries.id',
+                [],
+                (_, { rows }) => {
+                    setIncomes(rows._array);
+                },
+            );
+        });
+    }, []);
 
     const allCategouries: string[] = [];
     incomes.map((income) => {
@@ -60,7 +77,7 @@ export default function Incomes() {
                 ))}
             </ScrollView>
             <View className='my-3'>
-                <Table records={incomes} />
+                <Table records={incomes} type='incomes' />
             </View>
         </>
     );
