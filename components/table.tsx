@@ -7,9 +7,11 @@ import { useEffect, useState } from 'react';
 export default function Table({
     records,
     type,
+    paginate,
 }: {
     records: Expense[];
     type: 'incomes' | 'expenses';
+    paginate: boolean;
 }) {
     const tableHeaders = [
         {
@@ -21,8 +23,9 @@ export default function Table({
         },
     ];
 
+    const baseOffset = 7;
     const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(5);
+    const [endIndex, setEndIndex] = useState(baseOffset);
     const [hasToBePaginated, setHasToBePaginated] = useState(false);
     const [canGoForward, setCanGoForward] = useState(false);
     const [canGoBackward, setCanGoBackward] = useState(false);
@@ -130,7 +133,7 @@ export default function Table({
                     )}
                 />
             </ScrollView>
-            {hasToBePaginated ? (
+            {paginate && hasToBePaginated ? (
                 <View className='flex flex-row gap-3 my-2 ml-auto'>
                     <Pressable
                         className={`p-1 ${
@@ -139,7 +142,7 @@ export default function Table({
                         onPress={() => {
                             if (canGoBackward) {
                                 setEndIndex(startIndex);
-                                setStartIndex(startIndex - 5);
+                                setStartIndex(startIndex - baseOffset);
                             }
                         }}
                     >
@@ -152,7 +155,7 @@ export default function Table({
                         onPress={() => {
                             if (canGoForward) {
                                 setStartIndex(endIndex);
-                                setEndIndex(endIndex + 5);
+                                setEndIndex(endIndex + baseOffset);
                             }
                         }}
                     >
