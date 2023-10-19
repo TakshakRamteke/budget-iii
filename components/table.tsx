@@ -134,11 +134,11 @@ export default function Table({
                 />
             </ScrollView>
             {paginate && hasToBePaginated ? (
-                <View className='flex flex-row gap-3 my-2 ml-auto'>
+                <View className='flex flex-row my-2 ml-auto border border-slate-600 rounded'>
                     <Pressable
                         className={`p-1 ${
-                            canGoBackward ? 'bg-[#AA00FA]' : 'bg-[#1C1C1C]'
-                        } rounded-sm px-4`}
+                            canGoBackward ? 'bg-[#1C1C1C]' : 'bg-[#161616]'
+                        } rounded-sm px-4 border-r border-slate-600`}
                         onPress={() => {
                             if (canGoBackward) {
                                 setEndIndex(startIndex);
@@ -146,11 +146,17 @@ export default function Table({
                             }
                         }}
                     >
-                        <Text className='text-white'>Prev</Text>
+                        <Text
+                            className={`${
+                                canGoBackward ? 'text-white' : 'text-slate-600'
+                            }`}
+                        >
+                            Prev
+                        </Text>
                     </Pressable>
                     <Pressable
                         className={`p-1 ${
-                            canGoForward ? 'bg-[#AA00FA]' : 'bg-[#1C1C1C]'
+                            canGoForward ? 'bg-[#1C1C1C]' : 'bg-[#161616]'
                         } rounded-sm px-4`}
                         onPress={() => {
                             if (canGoForward) {
@@ -159,7 +165,13 @@ export default function Table({
                             }
                         }}
                     >
-                        <Text className='text-white'>Next</Text>
+                        <Text
+                            className={`${
+                                canGoForward ? 'text-white' : 'text-slate-600'
+                            }`}
+                        >
+                            Next
+                        </Text>
                     </Pressable>
                 </View>
             ) : null}
