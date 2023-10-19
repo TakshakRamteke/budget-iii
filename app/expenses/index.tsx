@@ -80,6 +80,7 @@ export default function Expenses() {
                         return new Date(next.date) - new Date(current.date);
                     })}
                     type='expenses'
+                    paginate={true}
                 />
             </View>
         </>
