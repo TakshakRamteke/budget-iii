@@ -83,6 +83,7 @@ export default function Incomes() {
                         return new Date(next.date) - new Date(current.date);
                     })}
                     type='incomes'
+                    paginate={true}
                 />
             </View>
         </>

@@ -129,6 +129,7 @@ export default function Page() {
                         return new Date(next.date) - new Date(current.date);
                     })}
                     type='incomes'
+                    paginate={false}
                 />
             </View>
 
@@ -142,6 +143,7 @@ export default function Page() {
                         return new Date(next.date) - new Date(current.date);
                     })}
                     type='expenses'
+                    paginate={false}
                 />
             </View>
         </>
