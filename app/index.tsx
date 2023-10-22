@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import Table from '../components/table';
 import TotalCard from '../components/totalCard';
@@ -118,11 +118,27 @@ export default function Page() {
                             : 'border-[#1C1C1C]'
                     }`}
                 >
-                    <Text className='text-lg font-medium mt-auto text-slate-200'>
-                        {totalSavings < 0.4 * totalIncome
-                            ? 'Total Savings'
-                            : 'Total Savings'}
-                    </Text>
+                    {totalSavings < 0.4 * totalIncome ? (
+                        <>
+                            <Text className='text-lg font-medium mt-auto text-slate-200'>
+                                Total Savings
+                            </Text>
+                            <Image
+                                source={require('../assets/sad_emoji.gif')}
+                                className='w-6 h-6 mt-auto'
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Text className='text-lg font-medium mt-auto text-slate-200'>
+                                Total Savings
+                            </Text>
+                            <Image
+                                source={require('../assets/happy_emoji.gif')}
+                                className='w-6 h-6 mt-auto'
+                            />
+                        </>
+                    )}
                     <Text className='mt-0 ml-auto font-semibold text-3xl text-white'>
                         ₹ {totalSavings.toLocaleString()}
                     </Text>
