@@ -104,15 +104,29 @@ export default function Page() {
                   })
             : 0;
 
+    const totalSavings = totalIncome - totalExpense;
+
     return (
         <>
             <Text className='text-2xl font-bold text-white'>Home</Text>
 
             <View className='mt-3'>
-                <TotalCard
-                    label='Total Savings'
-                    totalAmount={totalIncome - totalExpense}
-                />
+                <View
+                    className={`flex flex-row items-center border rounded p-3 mt-1.5 mb-1.5 bg-[#1C1C1C] ${
+                        totalSavings < 0.4 * totalIncome
+                            ? 'border-red-500'
+                            : 'border-[#1C1C1C]'
+                    }`}
+                >
+                    <Text className='text-lg font-medium mt-auto text-slate-200'>
+                        {totalSavings < 0.4 * totalIncome
+                            ? 'Total Savings'
+                            : 'Total Savings'}
+                    </Text>
+                    <Text className='mt-0 ml-auto font-semibold text-3xl text-white'>
+                        ₹ {totalSavings.toLocaleString()}
+                    </Text>
+                </View>
 
                 <TotalCard label='Total Expenses' totalAmount={totalExpense} />
 
