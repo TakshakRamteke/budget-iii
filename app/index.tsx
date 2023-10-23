@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import Table from '../components/table';
 import TotalCard from '../components/totalCard';
@@ -104,15 +104,45 @@ export default function Page() {
                   })
             : 0;
 
+    const totalSavings = totalIncome - totalExpense;
+
     return (
         <>
             <Text className='text-2xl font-bold text-white'>Home</Text>
 
             <View className='mt-3'>
-                <TotalCard
-                    label='Total Savings'
-                    totalAmount={totalIncome - totalExpense}
-                />
+                <View
+                    className={`flex flex-row items-center border rounded p-3 mt-1.5 mb-1.5 bg-[#1C1C1C] ${
+                        totalSavings < 0.4 * totalIncome
+                            ? 'border-red-500'
+                            : 'border-[#1C1C1C]'
+                    }`}
+                >
+                    {totalSavings < 0.4 * totalIncome ? (
+                        <>
+                            <Text className='text-lg font-medium mt-auto text-slate-200'>
+                                Total Savings
+                            </Text>
+                            <Image
+                                source={require('../assets/sad_emoji.gif')}
+                                className='w-6 h-6 mt-auto'
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Text className='text-lg font-medium mt-auto text-slate-200'>
+                                Total Savings
+                            </Text>
+                            <Image
+                                source={require('../assets/happy_emoji.gif')}
+                                className='w-6 h-6 mt-auto'
+                            />
+                        </>
+                    )}
+                    <Text className='mt-0 ml-auto font-semibold text-3xl text-white'>
+                        ₹ {totalSavings.toLocaleString()}
+                    </Text>
+                </View>
 
                 <TotalCard label='Total Expenses' totalAmount={totalExpense} />
 
