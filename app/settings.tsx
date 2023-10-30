@@ -1,9 +1,11 @@
-import { Button, Pressable, Text, View } from 'react-native';
+import { Button, Modal, Pressable, Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import CrossIcon from '../components/icons/crossIcon';
+import CategouriesModal from '../components/categouriesModal';
+import RightArrow from '../components/icons/rightArrow';
 
 export default function Settings() {
     const db = SQLite.openDatabase('dev.db');
@@ -17,6 +19,9 @@ export default function Settings() {
     const [allExpenseCategouries, setAllExpenseCategouries] = useState<
         Category[]
     >([]);
+
+    const [incomesModalOpen, setIncomesModalOpen] = useState(false);
+    const [expensesModalOpen, setExpensesModalOpen] = useState(false);
 
     function cleanDB() {
         setIsCleaning(true);
@@ -78,6 +83,23 @@ export default function Settings() {
         }
     }
 
+    function removeCategory(
+        categoryId: number,
+        type: 'incomesCategouries' | 'expensesCategouries',
+    ) {
+        setAdded(true);
+        console.log(categoryId);
+        db.transaction((tx) => {
+            tx.executeSql(
+                `DELETE FROM ${type} WHERE id=${categoryId}`,
+                [],
+                (_, { rows }) => {
+                    setAdded(false);
+                },
+            );
+        });
+    }
+
     useEffect(() => {
         db.transaction((tx) => {
             tx.executeSql(
@@ -102,105 +124,59 @@ export default function Settings() {
         <>
             <Text className='text-2xl font-bold text-white'>Settings</Text>
 
-            <View>
-                <Text className='my-3 text-lg text-white'>
-                    All Income Categories
-                </Text>
-                <ScrollView horizontal={true} className='gap-2'>
-                    {allIncomeCategouries.map((incomeCategory) => (
-                        <View
-                            key={incomeCategory.id}
-                            className='bg-gray-800 bg-opacity-20 rounded p-2 pl-3 w-fit flex flex-row items-center justify-center'
-                        >
-                            <Text className='text-white'>
-                                {incomeCategory.name}
-                            </Text>
-                            <Pressable
-                                onPress={() => {
-                                    setIsCleaning(true);
-                                    db.transaction((tx) => {
-                                        tx.executeSql(
-                                            `DELETE FROM incomesCategouries WHERE id=${incomeCategory.id}`,
-                                            [],
-                                            (_, { rows }) => {
-                                                setIsCleaning(false);
-                                            },
-                                        );
-                                    });
-                                }}
-                            >
-                                <CrossIcon
-                                    stroke='white'
-                                    className='w-4 h-4 ml-2'
-                                />
-                            </Pressable>
-                        </View>
-                    ))}
-                </ScrollView>
-                <TextInput
-                    value={newIncomeCategory}
-                    onChangeText={onChangeNewIncomeCategory}
-                    className='bg-[#1C1C1C] p-1 px-2 text-white my-3'
-                />
-                <Pressable
-                    onPress={addIncomeCategory}
-                    className='bg-green-500 rounded p-2'
-                >
-                    <Text className='text-white text-center'>
-                        {!added ? 'Add Income Category' : 'Adding...'}
+            <Pressable
+                onPress={() => setIncomesModalOpen(!incomesModalOpen)}
+                className='my-3 flex flex-row items-center'
+            >
+                <View>
+                    <Text className='text-lg text-white'>
+                        Income Categories
                     </Text>
-                </Pressable>
-            </View>
+                    <Text className='text-slate-500'>
+                        Add or remove Categories for you incomes
+                    </Text>
+                </View>
+                <RightArrow stroke='white' className='ml-auto w-7 h-7' />
+            </Pressable>
 
-            <View className='my-3'>
-                <Text className='mb-3 text-lg text-white'>
-                    All Expenses Categories
-                </Text>
-                <ScrollView horizontal={true} className='gap-2'>
-                    {allExpenseCategouries.map((expenseCategory) => (
-                        <View
-                            key={expenseCategory.id}
-                            className='bg-gray-800 bg-opacity-20 rounded p-2 pl-3 w-fit flex flex-row items-center justify-center'
-                        >
-                            <Text className='text-white'>
-                                {expenseCategory.name}
-                            </Text>
-                            <Pressable
-                                onPress={() => {
-                                    setIsCleaning(true);
-                                    db.transaction((tx) => {
-                                        tx.executeSql(
-                                            `DELETE FROM expensesCategouries WHERE id=${expenseCategory.id}`,
-                                            [],
-                                            (_, { rows }) => {
-                                                setIsCleaning(false);
-                                            },
-                                        );
-                                    });
-                                }}
-                            >
-                                <CrossIcon
-                                    stroke='white'
-                                    className='w-4 h-4 ml-2'
-                                />
-                            </Pressable>
-                        </View>
-                    ))}
-                </ScrollView>
-                <TextInput
-                    value={newExpenseCategory}
-                    onChangeText={onChangeNewExpenseCategory}
-                    className='bg-[#1C1C1C] p-1 px-2 text-white my-3'
-                />
-                <Pressable
-                    onPress={addExpenseCategory}
-                    className={`bg-blue-600 rounded p-2`}
-                >
-                    <Text className='text-white text-center'>
-                        {!added ? 'Add Expense Category' : 'Adding...'}
+            <Pressable
+                onPress={() => setExpensesModalOpen(!expensesModalOpen)}
+                className='my-3 flex flex-row items-center'
+            >
+                <View>
+                    <Text className='text-lg text-white'>
+                        Expenses Categories
                     </Text>
-                </Pressable>
-            </View>
+                    <Text className='text-slate-500'>
+                        Add or remove Categories for you Expenses
+                    </Text>
+                </View>
+                <RightArrow stroke='white' className='ml-auto w-7 h-7' />
+            </Pressable>
+
+            <CategouriesModal
+                modalOpen={incomesModalOpen}
+                setModalOpen={() => setIncomesModalOpen(!incomesModalOpen)}
+                categories={allIncomeCategouries}
+                adderFunction={() => addIncomeCategory()}
+                newCategoryName={newIncomeCategory}
+                onChangeNewCategoryName={onChangeNewIncomeCategory}
+                added={added}
+                removeCategoryFunc={removeCategory}
+                type='incomesCategouries'
+            />
+
+            <CategouriesModal
+                modalOpen={expensesModalOpen}
+                setModalOpen={() => setExpensesModalOpen(!expensesModalOpen)}
+                categories={allExpenseCategouries}
+                adderFunction={() => addExpenseCategory()}
+                newCategoryName={newExpenseCategory}
+                onChangeNewCategoryName={onChangeNewExpenseCategory}
+                added={added}
+                removeCategoryFunc={removeCategory}
+                type='expensesCategouries'
+            />
         </>
     );
 }
