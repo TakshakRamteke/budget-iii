@@ -21,10 +21,11 @@ export default function BottomNavigation() {
                             stroke={pathName === '/' ? '#AA00FA' : 'white'}
                         />
                         <Text
-                            className={`text-xs ${pathName === '/'
+                            className={`text-xs ${
+                                pathName === '/'
                                     ? 'text-[#AA00FA]'
                                     : 'text-white'
-                                }`}
+                            }`}
                         >
                             Home
                         </Text>
@@ -41,10 +42,11 @@ export default function BottomNavigation() {
                             }
                         />
                         <Text
-                            className={`text-xs ${pathName.includes('/incomes')
+                            className={`text-xs ${
+                                pathName.includes('/incomes')
                                     ? 'text-[#AA00FA]'
                                     : 'text-white'
-                                }`}
+                            }`}
                         >
                             Incomes
                         </Text>
@@ -61,10 +63,11 @@ export default function BottomNavigation() {
                             }
                         />
                         <Text
-                            className={`text-xs ${pathName.includes('/expense')
+                            className={`text-xs ${
+                                pathName.includes('/expense')
                                     ? 'text-[#AA00FA]'
                                     : 'text-white'
-                                }`}
+                            }`}
                         >
                             Expenses
                         </Text>
@@ -80,10 +83,11 @@ export default function BottomNavigation() {
                         />
 
                         <Text
-                            className={`text-xs ${pathName === '/analytics'
+                            className={`text-xs ${
+                                pathName === '/analytics'
                                     ? 'text-[#AA00FA]'
                                     : 'text-white'
-                                }`}
+                            }`}
                         >
                             Analytics
                         </Text>
@@ -98,10 +102,11 @@ export default function BottomNavigation() {
                             }
                         />
                         <Text
-                            className={`text-xs ${pathName === '/settings'
+                            className={`text-xs ${
+                                pathName === '/settings'
                                     ? 'text-[#AA00FA]'
                                     : 'text-white'
-                                }`}
+                            }`}
                         >
                             Settings
                         </Text>
