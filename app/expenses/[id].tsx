@@ -44,7 +44,15 @@ export default function ExpensePage() {
                     onChangeNewName(rows._array[0].name);
                     onChangeNewAmount(rows._array[0].amount);
                     setNewCategory(rows._array[0].categoryId);
-                    setNewDate(new Date(rows._array[0].date));
+                    setNewDate(
+                        new Date(
+                            //@ts-expect-error
+                            moment(
+                                `${rows._array[0].date},${rows._array[0].time}`,
+                                'DD/MM/YYYY,hh:mm:ss',
+                            ),
+                        ),
+                    );
                 },
             ),
         );
@@ -65,7 +73,11 @@ export default function ExpensePage() {
                     newAmount,
                 )}, categoryId=${parseInt(
                     newCategory.toString(),
-                )}, date="${newDate}" WHERE id=${id};`,
+                )}, date = "${new Date(
+                    newDate,
+                ).toLocaleDateString()} ", time="${new Date(newDate)
+                    .toTimeString()
+                    .slice(0, 8)} " WHERE id=${id};`,
                 [],
                 () => {
                     router.back();

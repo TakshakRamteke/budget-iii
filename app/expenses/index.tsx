@@ -1,11 +1,13 @@
 import { Link } from 'expo-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { recordsContext } from '../../utils/RecordsProvider';
 import Table from '../../components/table';
 import TotalCard from '../../components/totalCard';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as SQLite from 'expo-sqlite';
+import moment from 'moment';
+import { datesContext } from '../../utils/DateProvider';
 
 export default function Expenses() {
     const db = SQLite.openDatabase('dev.db');
@@ -14,12 +16,30 @@ export default function Expenses() {
         recordsContext,
     ) as RecordsProviderContext;
 
+    const { month, fromDate, toDate } = useContext(datesContext);
+
     useEffect(() => {
+        console.log(
+            'fromDate:',
+            moment(fromDate).format('Do MMM YYYY, hh:mm'),
+            'toDate:',
+            moment(toDate).format('Do MMM YYYY, hh:mm'),
+        );
+
         db.transaction((tx) => {
             tx.executeSql(
-                'SELECT expenses.*, expensesCategouries.name AS category FROM expenses LEFT JOIN expensesCategouries ON expenses.categoryId=expensesCategouries.id',
+                'SELECT expenses.*, expensesCategouries.name AS category FROM expenses LEFT JOIN expensesCategouries ON expenses.categoryId=expensesCategouries.id ORDER BY expenses.date DESC',
                 [],
-                (_, { rows }) => setExpenses(rows._array),
+                (_, { rows }) => {
+                    setExpenses(
+                        rows._array.filter(
+                            (expense) =>
+                                moment(expense.date, 'DD/MM/YYYY') >=
+                                    fromDate &&
+                                toDate > moment(expense.date, 'DD/MM/YYYY'),
+                        ),
+                    );
+                },
             );
         });
     }, []);
@@ -74,14 +94,7 @@ export default function Expenses() {
                 ))}
             </ScrollView>
             <View className='my-3'>
-                <Table
-                    records={expenses.sort((current, next) => {
-                        //@ts-ignore
-                        return new Date(next.date) - new Date(current.date);
-                    })}
-                    type='expenses'
-                    paginate={true}
-                />
+                <Table records={expenses} type='expenses' paginate={true} />
             </View>
         </>
     );
