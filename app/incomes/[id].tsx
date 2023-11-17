@@ -21,6 +21,7 @@ export default function IncomePage() {
     >([]);
     const [newDate, setNewDate] = useState(new Date());
     const [isAdding, setIsAdding] = useState(false);
+    const [alert, setAlert] = useState<string | null>(null);
 
     DropDownPicker.setTheme('DARK');
 
@@ -44,7 +45,15 @@ export default function IncomePage() {
                     onChangeNewName(rows._array[0].name);
                     onChangeNewAmount(rows._array[0].amount);
                     setNewCategory(rows._array[0].categoryId);
-                    setNewDate(new Date(rows._array[0].date));
+                    setNewDate(
+                        new Date(
+                            //@ts-expect-error
+                            moment(
+                                `${rows._array[0].date},${rows._array[0].time}`,
+                                'DD/MM/YYYY,hh:mm:ss',
+                            ),
+                        ),
+                    );
                 },
             ),
         );
@@ -52,7 +61,7 @@ export default function IncomePage() {
 
     function deleteRecord() {
         db.transaction((tx) =>
-            tx.executeSql(`DELETE FROM incomes WHERE id=${id}`, [], () => {
+            tx.executeSql(`DELETE FROM incomes WHERE id = ${id}`, [], () => {
                 router.back();
             }),
         );
@@ -61,11 +70,15 @@ export default function IncomePage() {
     function updateRecord() {
         db.transaction((tx) =>
             tx.executeSql(
-                `UPDATE incomes SET name="${newName}", amount=${parseInt(
+                `UPDATE incomes SET name = "${newName}", amount = ${parseInt(
                     newAmount,
-                )}, categoryId=${parseInt(
+                )}, categoryId = ${parseInt(
                     newCategory.toString(),
-                )}, date="${newDate}" WHERE id=${id};`,
+                )}, date = "${new Date(
+                    newDate,
+                ).toLocaleDateString()} ", time="${new Date(newDate)
+                    .toTimeString()
+                    .slice(0, 8)} " WHERE id=${id};`,
                 [],
                 () => {
                     router.back();
@@ -94,6 +107,7 @@ export default function IncomePage() {
     const showTimePicker = () => {
         showMode('time');
     };
+
     return (
         <>
             <View className='flex flex-row items-center'>
