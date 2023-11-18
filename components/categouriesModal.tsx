@@ -1,8 +1,6 @@
-import { Button, Modal, Pressable, Text, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import CrossIcon from '../components/icons/crossIcon';
-import * as SQLite from 'expo-sqlite';
-import { useState } from 'react';
 
 export default function CategouriesModal({
     modalOpen,
@@ -35,8 +33,11 @@ export default function CategouriesModal({
                 visible={modalOpen}
                 onRequestClose={() => setModalOpen(!modalOpen)}
             >
-                <View className='h-1/2 mt-auto bg-[#161616] p-2 rounded-t border-t border-slate-500'>
-                    <View>
+                <View
+                    className='h-full'
+                    style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
+                >
+                    <View className='mt-auto p-2 rounded-t bg-[#161616]'>
                         <View className='border-b border-slate-700 flex flex-row items-center'>
                             {type == 'incomesCategouries' ? (
                                 <Text className='my-3 text-lg text-white'>
@@ -86,7 +87,7 @@ export default function CategouriesModal({
                         />
                         <Pressable
                             onPress={() => adderFunction(newCategoryName)}
-                            className='bg-blue-600 rounded p-2'
+                            className='bg-blue-600 rounded p-2 mb-[50%]'
                         >
                             <Text className='text-white text-center'>
                                 {!added ? 'Add Category' : 'Working...'}

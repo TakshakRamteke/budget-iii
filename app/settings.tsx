@@ -2,10 +2,13 @@ import { Button, Modal, Pressable, Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import CrossIcon from '../components/icons/crossIcon';
 import CategouriesModal from '../components/categouriesModal';
 import RightArrow from '../components/icons/rightArrow';
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
+import { Platform } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import importDataBase from '../utils/importDatabase';
 
 export default function Settings() {
     const db = SQLite.openDatabase('dev.db');
@@ -23,20 +26,53 @@ export default function Settings() {
     const [incomesModalOpen, setIncomesModalOpen] = useState(false);
     const [expensesModalOpen, setExpensesModalOpen] = useState(false);
 
+    async function exportDB() {
+        if (Platform.OS === 'android') {
+            const storagePermission =
+                await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+            if (storagePermission.granted) {
+                console.log('Granted permission');
+                const currentDB = await FileSystem.readAsStringAsync(
+                    FileSystem.documentDirectory + 'SQLite/dev.db',
+                    {
+                        encoding: FileSystem.EncodingType.Base64,
+                    },
+                );
+
+                await FileSystem.StorageAccessFramework.createFileAsync(
+                    storagePermission.directoryUri,
+                    'dev.db',
+                    'application/octet-stream',
+                )
+                    .then(async (uri) => {
+                        await FileSystem.writeAsStringAsync(uri, currentDB, {
+                            encoding: FileSystem.EncodingType.Base64,
+                        });
+                    })
+                    .catch((error) => console.log(error));
+            }
+        }
+    }
+
     function cleanDB() {
         setIsCleaning(true);
-        db.exec(
-            [
-                { sql: 'DELETE FROM expenses', args: [] },
-                { sql: 'DELETE FROM incomes', args: [] },
-                { sql: 'DELETE FROM incomesCategouries', args: [] },
-            ],
-            false,
-            () => {
-                setIsCleaning(false);
-                router.push('/');
-            },
-        );
+        db.transaction((tx) => {
+            tx.executeSql('DROP TABLE incomesCategouries', [], () => {
+                console.log('Dropping incomesCategouries table');
+            });
+            tx.executeSql('DROP TABLE expensesCategouries', [], () => {
+                console.log('Dropping expensesCategouries table');
+            });
+            tx.executeSql('DROP TABLE expenses', [], () => {
+                console.log('Dropping expenses table');
+            });
+            tx.executeSql('DROP TABLE incomes', [], () => {
+                console.log('Dropping incomes table');
+            });
+        });
+        setIsCleaning(false);
+        router.push('/');
     }
 
     function addIncomeCategory() {
@@ -124,7 +160,7 @@ export default function Settings() {
         <>
             <Text className='text-2xl font-bold text-white'>Settings</Text>
 
-            <Pressable
+            <TouchableOpacity
                 onPress={() => setIncomesModalOpen(!incomesModalOpen)}
                 className='my-3 flex flex-row items-center'
             >
@@ -137,9 +173,9 @@ export default function Settings() {
                     </Text>
                 </View>
                 <RightArrow stroke='white' className='ml-auto w-7 h-7' />
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable
+            <TouchableOpacity
                 onPress={() => setExpensesModalOpen(!expensesModalOpen)}
                 className='my-3 flex flex-row items-center'
             >
@@ -152,7 +188,46 @@ export default function Settings() {
                     </Text>
                 </View>
                 <RightArrow stroke='white' className='ml-auto w-7 h-7' />
-            </Pressable>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={importDataBase}
+                className='my-3 flex flex-row items-center'
+            >
+                <View>
+                    <Text className='text-lg text-white'>Import DataBase</Text>
+                    <Text className='text-slate-500'>
+                        Import a database from a pervious version
+                    </Text>
+                </View>
+                <RightArrow stroke='white' className='ml-auto w-7 h-7' />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={exportDB}
+                className='my-3 flex flex-row items-center'
+            >
+                <View>
+                    <Text className='text-lg text-white'>Export DataBase</Text>
+                    <Text className='text-slate-500'>
+                        Export you current DataBase a SQLite DataBase
+                    </Text>
+                </View>
+                <RightArrow stroke='white' className='ml-auto w-7 h-7' />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={cleanDB}
+                className='my-3 flex flex-row items-center'
+            >
+                <View>
+                    <Text className='text-lg text-red-500'>Reset DataBase</Text>
+                    <Text className='text-slate-500'>
+                        Clear out your current database
+                    </Text>
+                </View>
+                <RightArrow stroke='white' className='ml-auto w-7 h-7' />
+            </TouchableOpacity>
 
             <CategouriesModal
                 modalOpen={incomesModalOpen}

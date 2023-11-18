@@ -20,6 +20,7 @@ export default function Table({
             amount: 'Amount',
             category: 'Category',
             date: 'Date',
+            time: 'time',
         },
     ];
 
@@ -125,8 +126,14 @@ export default function Table({
                                     {record.index === 0
                                         ? record.item.date
                                         : moment(
-                                              new Date(record.item.date),
-                                          ).format('Do MMM yyyy, h:mm a')}
+                                              record.item.date,
+                                              'DD/MM/YYYY',
+                                          ).format('Do MMM YYYY') +
+                                          ', ' +
+                                          moment(
+                                              record.item.time,
+                                              'hh:mm:ss',
+                                          ).format('hh:mm a')}
                                 </Text>
                             </View>
                         </>
