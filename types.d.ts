@@ -4,6 +4,7 @@ type Expense = {
     amount: number;
     category: string;
     date: string;
+    time: string;
     categoryId: string;
 };
 
@@ -13,6 +14,7 @@ type Income = {
     amount: number;
     category: string;
     date: string;
+    time: string;
     categoryId: string;
 };
 
@@ -26,4 +28,10 @@ type RecordsProviderContext = {
     expenses: Expense[];
     setIncomes: (incomes: Income[]) => void;
     setExpenses: (expenses: Expense[]) => void;
+};
+
+type TimeLineProviderContext = {
+    currentDate: string;
+    fromDate: string;
+    toDate: string;
 };

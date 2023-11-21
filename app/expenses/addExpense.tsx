@@ -29,7 +29,6 @@ export default function AddExpense() {
                 'SELECT * FROM expensesCategouries',
                 [],
                 (_, { rows }) => {
-                    console.log(rows._array);
                     setAvaliableCategouries(rows._array);
                 },
             );
@@ -62,11 +61,15 @@ export default function AddExpense() {
             db.transaction((tx) => {
                 setIsAdding(true);
                 tx.executeSql(
-                    `INSERT INTO expenses (amount, name, date, categoryId) VALUES (${parseInt(
+                    `INSERT INTO expenses (amount,name,categoryId,date,time) VALUES (${parseInt(
                         newAmount,
-                    )}, "${newName}","${newDate}",${parseInt(
+                    )},"${newName}",${parseInt(
                         newCategory.toString(),
-                    )})`,
+                    )},"${new Date(newDate).toLocaleDateString()}","${new Date(
+                        newDate,
+                    )
+                        .toTimeString()
+                        .slice(0, 8)}")`,
                     [],
                     (_, { rows }) => {
                         setIsAdding(false);

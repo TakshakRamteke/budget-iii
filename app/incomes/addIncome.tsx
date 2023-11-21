@@ -28,7 +28,6 @@ export default function AddIncome() {
                 'SELECT * FROM incomesCategouries',
                 [],
                 (_, { rows }) => {
-                    console.log(rows._array);
                     setAvaliableCategouries(rows._array);
                 },
             );
@@ -61,15 +60,23 @@ export default function AddIncome() {
             db.transaction((tx) => {
                 setIsAdding(true);
                 tx.executeSql(
-                    `INSERT INTO incomes (amount,name,categoryId,date) VALUES (${parseInt(
+                    `INSERT INTO incomes (amount,name,categoryId,date,time) VALUES (${parseInt(
                         newAmount,
                     )},"${newName}",${parseInt(
                         newCategory.toString(),
-                    )},"${new Date(newDate)}")`,
+                    )},"${new Date(newDate).toLocaleDateString()}","${new Date(
+                        newDate,
+                    )
+                        .toTimeString()
+                        .slice(0, 8)}")`,
                     [],
                     (_, { rows }) => {
                         setIsAdding(false);
                         router.back();
+                    },
+                    //@ts-ignore
+                    (_, error) => {
+                        console.log(error);
                     },
                 );
             });

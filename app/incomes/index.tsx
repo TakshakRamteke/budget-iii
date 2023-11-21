@@ -6,6 +6,8 @@ import Table from '../../components/table';
 import TotalCard from '../../components/totalCard';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as SQLite from 'expo-sqlite';
+import moment from 'moment';
+import { datesContext } from '../../utils/DateProvider';
 
 export default function Incomes() {
     const db = SQLite.openDatabase('dev.db');
@@ -14,13 +16,28 @@ export default function Incomes() {
         recordsContext,
     ) as RecordsProviderContext;
 
+    const { month, fromDate, toDate, setMonth } = useContext(datesContext);
+
     useEffect(() => {
+        console.log(
+            'fromDate:',
+            moment(fromDate).format('Do MMM YYYY, hh:mm'),
+            'toDate:',
+            moment(toDate).format('Do MMM YYYY, hh:mm'),
+        );
+
         db.transaction((tx) => {
             tx.executeSql(
-                'SELECT incomes.*, incomesCategouries.name AS category FROM incomes LEFT JOIN incomesCategouries ON incomes.categoryId=incomesCategouries.id',
+                'SELECT incomes.*, incomesCategouries.name AS category FROM incomes LEFT JOIN incomesCategouries ON incomes.categoryId=incomesCategouries.id ORDER BY incomes.date DESC',
                 [],
                 (_, { rows }) => {
-                    setIncomes(rows._array);
+                    setIncomes(
+                        rows._array.filter(
+                            (income) =>
+                                moment(income.date, 'DD/MM/YYYY') >= fromDate &&
+                                toDate > moment(income.date, 'DD/MM/YYYY'),
+                        ),
+                    );
                 },
             );
         });
@@ -76,15 +93,9 @@ export default function Incomes() {
                     </View>
                 ))}
             </ScrollView>
+
             <View className='my-3'>
-                <Table
-                    records={incomes.sort((current, next) => {
-                        //@ts-ignore
-                        return new Date(next.date) - new Date(current.date);
-                    })}
-                    type='incomes'
-                    paginate={true}
-                />
+                <Table records={incomes} type='incomes' paginate={true} />
             </View>
         </>
     );
