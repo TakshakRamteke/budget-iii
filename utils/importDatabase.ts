@@ -75,13 +75,9 @@ export default async function importDataBase() {
                                 importedIncome.amount,
                             )},"${importedIncome.name}",${parseInt(
                                 importedIncome.categoryId.toString(),
-                            )},"${new Date(
-                                importedIncome.date,
-                            ).toLocaleDateString()}","${new Date(
-                                importedIncome.date,
-                            )
-                                .toTimeString()
-                                .slice(0, 8)}")`,
+                            )},"${importedIncome.date}","${
+                                importedIncome.time
+                            }")`,
                             [],
                         );
                     });
@@ -96,13 +92,9 @@ export default async function importDataBase() {
                                 importedExpense.amount,
                             )},"${importedExpense.name}",${parseInt(
                                 importedExpense.categoryId.toString(),
-                            )},"${new Date(
-                                importedExpense.date,
-                            ).toLocaleDateString()}","${new Date(
-                                importedExpense.date,
-                            )
-                                .toTimeString()
-                                .slice(0, 8)}")`,
+                            )},"${importedExpense.date}","${
+                                importedExpense.time
+                            }")`,
                             [],
                         );
                     });
