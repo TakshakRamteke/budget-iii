@@ -20,14 +20,23 @@ export default function DatesProvider({
     const [fromDate, setFromDate] = useState(
         new Date(
             //@ts-ignore
-            moment(`07/${month}/2023,00:00:00`, 'DD/MM/YYYY,hh:mm:ss'),
+            moment(
+                `07/${month}/${currentDate.getFullYear()},00:00:00`,
+                'DD/MM/YYYY,hh:mm:ss',
+            ),
         ),
     );
 
     const [toDate, setToDate] = useState(
         new Date(
             //@ts-ignore
-            moment(`07/${month + 1}/2023,00:00:00`, 'DD/MM/YYYY,hh:mm:ss'),
+            moment(
+                `07/${month >= 12 ? month - month + 1 : month}/${month >= 12
+                    ? currentDate.getFullYear() + 1
+                    : currentDate.getFullYear()
+                },00:00:00`,
+                'DD/MM/YYYY,hh:mm:ss',
+            ),
         ),
     );
 

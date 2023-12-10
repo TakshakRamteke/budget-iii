@@ -160,6 +160,7 @@ export default function Settings() {
         <>
             <Text className='text-2xl font-bold text-white'>Settings</Text>
 
+            {/*Toggle for categories Modal */}
             <TouchableOpacity
                 onPress={() => setIncomesModalOpen(!incomesModalOpen)}
                 className='my-3 flex flex-row items-center'
