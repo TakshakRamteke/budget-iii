@@ -191,6 +191,7 @@ export default function Settings() {
                 <RightArrow stroke='white' className='ml-auto w-7 h-7' />
             </TouchableOpacity>
 
+            {/* DB related action buttons */}
             <TouchableOpacity
                 onPress={importDataBase}
                 className='my-3 flex flex-row items-center'
@@ -230,6 +231,7 @@ export default function Settings() {
                 <RightArrow stroke='white' className='ml-auto w-7 h-7' />
             </TouchableOpacity>
 
+            {/*Modal for categories*/}
             <CategouriesModal
                 modalOpen={incomesModalOpen}
                 setModalOpen={() => setIncomesModalOpen(!incomesModalOpen)}
