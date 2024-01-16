@@ -76,11 +76,8 @@ export default function Page() {
                 [],
                 (_, { rows }) => {
                     setExpenses(
-                        rows._array.filter(
-                            (expense) =>
-                                moment(expense.date, 'DD/MM/YYYY') >=
-                                    fromDate &&
-                                toDate > moment(expense.date, 'DD/MM/YYYY'),
+                        rows._array.filter((expense) =>
+                            expense.date.includes('2024'),
                         ),
                     );
                 },
@@ -89,11 +86,14 @@ export default function Page() {
                 `SELECT incomes.*, incomes.date AS date, incomesCategouries.name AS category FROM incomes LEFT JOIN incomesCategouries ON incomes.categoryId=incomesCategouries.id`,
                 [],
                 (_, { rows }) => {
+                    console.log(
+                        rows._array.filter((item) =>
+                            item.date.includes('2024'),
+                        ),
+                    );
                     setIncomes(
-                        rows._array.filter(
-                            (income) =>
-                                moment(income.date, 'DD/MM/YYYY') >= fromDate &&
-                                toDate > moment(income.date, 'DD/MM/YYYY'),
+                        rows._array.filter((income) =>
+                            income.date.includes('2024'),
                         ),
                     );
                 },
