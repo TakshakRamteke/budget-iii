@@ -32,16 +32,13 @@ export default function Expenses() {
                 [],
                 (_, { rows }) => {
                     setExpenses(
-                        rows._array.filter((expense) =>
-                            expense.date.includes('2024'),
+                        rows._array.filter(
+                            (expense) =>
+                                moment(expense.date, 'DD/MM/YYYY') >=
+                                    fromDate &&
+                                toDate > moment(expense.date, 'DD/MM/YYYY'),
                         ),
                     );
-                    //                        rows._array.filter(
-                    //                            (expense) =>
-                    //                                moment(expense.date, 'DD/MM/YYYY') >=
-                    //                                    fromDate &&
-                    //                                toDate > moment(expense.date, 'DD/MM/YYYY'),
-                    //                        ),
                 },
             );
         });
