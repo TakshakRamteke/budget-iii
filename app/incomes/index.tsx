@@ -32,15 +32,12 @@ export default function Incomes() {
                 [],
                 (_, { rows }) => {
                     setIncomes(
-                        rows._array.filter((income) =>
-                            income.date.includes('2024'),
+                        rows._array.filter(
+                            (income) =>
+                                moment(income.date, 'DD/MM/YYYY') >= fromDate &&
+                                toDate > moment(income.date, 'DD/MM/YYYY'),
                         ),
                     );
-                    //                        rows._array.filter(
-                    //                            (income) =>
-                    //                                moment(income.date, 'DD/MM/YYYY') >= fromDate &&
-                    //                                toDate > moment(income.date, 'DD/MM/YYYY'),
-                    //                        ),
                 },
             );
         });

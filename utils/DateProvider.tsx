@@ -31,9 +31,10 @@ export default function DatesProvider({
         new Date(
             //@ts-ignore
             moment(
-                `07/${month >= 12 ? month - month + 1 : month}/${month >= 12
-                    ? currentDate.getFullYear() + 1
-                    : currentDate.getFullYear()
+                `07/${month + 1}/${
+                    month >= 12
+                        ? currentDate.getFullYear() + 1
+                        : currentDate.getFullYear()
                 },00:00:00`,
                 'DD/MM/YYYY,hh:mm:ss',
             ),
