@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { Link } from 'expo-router';
 import HomeIcon from './icons/home';
 import SettingsIcon from './icons/settingsIcon';
@@ -11,7 +11,7 @@ export default function BottomNavigation() {
     const pathName = usePathname();
     return (
         <View
-            className='w-full flex justify-center items-center mt-auto mb-2 fixed z-50 mx-auto'
+            className='w-full flex justify-center items-center mt-auto fixed z-50 mx-auto'
             style={{ elevation: 20 }}
         >
             <View className='w-full flex flex-row items-center justify-between border border-[#1C1C1C] rounded-full p-2.5 px-4 mt-auto fixed z-50 bg-[#1C1C1C]'>
